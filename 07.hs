@@ -1,6 +1,7 @@
 data NestedList a = Elem a | List [NestedList a]
 
-flatten (x) = 
+flatten :: NestedList a -> a
+flatten (List []) = List []
 
 main :: IO ()
 main = do
