@@ -1,6 +1,6 @@
 *
-wip/*.hs
-passing/*.hs
+!wip/*
+!passing/*
 !*.hs
 !.gitignore
 !README.md
