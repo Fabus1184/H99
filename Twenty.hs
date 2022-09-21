@@ -135,6 +135,19 @@ rotate (x:xs) n = rotate (xs ++ [x]) (n - 1)
 prop_rotate :: (Show a, Eq a) => [a] -> NonNegative Int -> Property
 prop_rotate xs (NonNegative n) = length (rotate xs n) === length xs
 
+-- Problem 20
+
+removeAt :: [a] -> Int -> [a]
+removeAt [] _ = []
+removeAt (x:xs) 0 = xs
+removeAt (x:xs) n = x : removeAt xs (n - 1)
+
+prop_removeAt :: (Show a, Eq a) => [a] -> NonNegative Int -> Property
+prop_removeAt [] (NonNegative n) = null (removeAt [] n) === True
+prop_removeAt xs (NonNegative n)
+    | n >= length xs = removeAt xs n === xs
+    | otherwise = length (removeAt xs n) === length xs - 1
+
 -- Tests
 
 return []

@@ -6,6 +6,7 @@ import Control.Applicative (liftA2)
 
 import Ten as Ten
 import Twenty as Twenty
+import Thirty as Thirty
 
 main :: IO ()
 main = do
@@ -13,5 +14,6 @@ main = do
     void $ mapM_ ($ quickCheckWithResult args)
         [
             Ten.runTests,
-            Twenty.runTests
+            Twenty.runTests,
+            Thirty.runTests
         ]
