@@ -74,20 +74,66 @@ prop_dupli xs =
 -- Problem 15
 
 repli :: [a] -> Int -> [a]
-repli [] _ = []
-repli xs 1 = xs
-repli (x:xs) n = replicate n x ++ repli xs n
+repli xs n = concatMap (replicate n) xs
 
 prop_repli :: (Show a, Eq a) => [a] -> NonNegative Int -> Property
 prop_repli xs (NonNegative n) =
     (length l === n * length xs)
-    .&.
-    conjoin ( 
-        map (\i -> allEqual (take n (drop i l)))
-        [0, n .. length xs - n])
     where
         l = repli xs n
         allEqual xs = all id (zipWith (==) xs (tail xs))
+
+-- Problem 16
+
+dropEvery :: [a] -> Int -> [a]
+dropEvery xs n = map fst $ filter (\(_, i) -> i `mod` n /= 0) $ zip xs [1 ..]
+
+prop_dropEvery :: (Show a, Eq a) => [a] -> Positive Int -> Property
+prop_dropEvery xs (Positive n) = 
+    length (dropEvery xs n) === (length xs - (length xs `div` n))
+
+-- Problem 17
+
+split :: [a] -> Int -> ([a], [a])
+split [] _ = ([], [])
+split (x:xs) 0 = ([], x:xs)
+split (x:xs) n = (\(a, b) -> (a ++ [x], b)) $ split xs (n - 1)
+
+prop_split :: (Show a, Eq a) => [a] -> NonNegative Int -> Property
+prop_split xs (NonNegative n)
+    | n > length xs = True === True
+    | otherwise =
+        (s === length xs)
+        .&.
+        (length (fst l) === n)
+        .&.
+        (length (snd l) === length xs - n)
+   where
+        l = split xs n
+        s = (\(a, b) -> length a + length b) l
+
+-- Problem 18
+
+slice :: [a] -> Int -> Int -> [a]
+slice xs a b = take (b - a) (drop a xs)
+
+prop_slice :: (Show a, Eq a) => [a] -> NonNegative Int -> NonNegative Int -> Property
+prop_slice xs (NonNegative a) (NonNegative b)
+    | a > length xs = null l === True
+    | otherwise =
+        (b < a ==> null l)
+    where
+        l = slice xs a b
+
+-- Problem 19
+
+rotate :: [a] -> Int -> [a]
+rotate [] _ = []
+rotate xs 0 = xs
+rotate (x:xs) n = rotate (xs ++ [x]) (n - 1)
+
+prop_rotate :: (Show a, Eq a) => [a] -> NonNegative Int -> Property
+prop_rotate xs (NonNegative n) = length (rotate xs n) === length xs
 
 -- Tests
 

@@ -9,7 +9,6 @@ import Twenty as Twenty
 
 main :: IO ()
 main = do
-    sample' (arbitrary :: Gen (NestedList Int)) >>= print
     let args = Args Nothing 2000 (10 ^ 10) 500 True 10
     void $ mapM_ ($ quickCheckWithResult args)
         [
